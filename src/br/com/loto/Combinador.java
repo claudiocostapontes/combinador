@@ -60,4 +60,5 @@ public class Combinador<T> {
 
         throw new IllegalArgumentException("O parâmetro deve ser menor que " + min);
     }
+    
 }
