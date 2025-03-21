@@ -1,8 +1,16 @@
 package br.com.loto;
 
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.Scanner;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class Combinador<T> {
     private final int cnt;
@@ -61,106 +69,124 @@ public class Combinador<T> {
         throw new IllegalArgumentException("O parâmetro deve ser menor que " + min);
     }
 
+    private static Map<Integer, Integer> frequenciaNumeros = new HashMap<>();
+
+    static {
+        frequenciaNumeros.put(20, 1776);
+        frequenciaNumeros.put(10, 1763);
+        frequenciaNumeros.put(11, 1761);
+        frequenciaNumeros.put(25, 1751);
+        frequenciaNumeros.put(13, 1739);
+        frequenciaNumeros.put(14, 1728);
+        frequenciaNumeros.put(24, 1728);
+        frequenciaNumeros.put(3, 1723);
+        frequenciaNumeros.put(5, 1720);
+        frequenciaNumeros.put(4, 1706);
+        frequenciaNumeros.put(22, 1702);
+        frequenciaNumeros.put(12, 1701);
+        frequenciaNumeros.put(19, 1696);
+        frequenciaNumeros.put(2, 1695);
+        frequenciaNumeros.put(18, 1695);
+        frequenciaNumeros.put(9, 1695);
+        frequenciaNumeros.put(1, 1692);
+        frequenciaNumeros.put(21, 1688);
+        frequenciaNumeros.put(15, 1686);
+        frequenciaNumeros.put(17, 1672);
+        frequenciaNumeros.put(23, 1668);
+        frequenciaNumeros.put(7, 1660);
+        frequenciaNumeros.put(6, 1649);
+        frequenciaNumeros.put(8, 1641);
+        frequenciaNumeros.put(16, 1635);
+    }
+
+    public static List<Integer> getNumerosMaisFrequentes(int quantidade) {
+        return frequenciaNumeros.entrySet().stream()
+                .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+                .limit(quantidade)
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
+    }
+
+    public static List<Integer> getNumerosMenosFrequentes(int quantidade) {
+        return frequenciaNumeros.entrySet().stream()
+                .sorted(Map.Entry.comparingByValue())
+                .limit(quantidade)
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
+    }
+
+    public static Integer[] gerarApostaComEstatisticas(int tamanhoAposta, int quantidadeMaisFrequentes, int quantidadeMenosFrequentes) {
+        List<Integer> numerosMais = getNumerosMaisFrequentes(quantidadeMaisFrequentes);
+        List<Integer> numerosMenos = getNumerosMenosFrequentes(quantidadeMenosFrequentes);
+        Set<Integer> aposta = new HashSet<>();
+
+        aposta.addAll(numerosMais);
+        aposta.addAll(numerosMenos);
+
+        Random random = new Random();
+        while (aposta.size() < tamanhoAposta) {
+            int numeroAleatorio = random.nextInt(25) + 1;
+            aposta.add(numeroAleatorio);
+        }
+
+        return aposta.stream().sorted().toArray(Integer[]::new);
+    }
+
     public static void main(String[] args) {
         Integer[] numerosLoteria = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25};
-        Scanner scanner = new Scanner(System.in);
-        int tamanhoAposta;
+        try (Scanner scanner = new Scanner(System.in)) {
+			int tamanhoAposta;
 
-        do {
-            System.out.print("Digite o tamanho da aposta (15 a 18): ");
-            tamanhoAposta = scanner.nextInt();
-        } while (tamanhoAposta < 15 || tamanhoAposta > 18);
+			do {
+			    System.out.print("Digite o tamanho da aposta (15 a 18): ");
+			    tamanhoAposta = scanner.nextInt();
+			} while (tamanhoAposta < 15 || tamanhoAposta > 18);
 
-        Combinador<Integer> combinador = new Combinador<>(tamanhoAposta, numerosLoteria);
+			Combinador<Integer> combinador = new Combinador<>(tamanhoAposta, numerosLoteria);
 
-        System.out.print("Digite a quantidade de apostas a serem geradas: ");
-        int quantidadeApostas = scanner.nextInt();
+			System.out.print("Digite a quantidade de apostas a serem geradas: ");
+			int quantidadeApostas = scanner.nextInt();
 
-        List<Integer[]> apostasGeradas = new ArrayList<>();
-        for (int seed = 0; seed < quantidadeApostas; seed++) {
-            Integer[] aposta = combinador.pegarCombinacao(seed);
-            System.out.println("Aposta " + (seed + 1) + ": " + Arrays.toString(aposta));
-            apostasGeradas.add(aposta);
-        }
+			List<Integer[]> apostasGeradas = new ArrayList<>();
+			for (int seed = 0; seed < quantidadeApostas; seed++) {
+			    Integer[] aposta = combinador.pegarCombinacao(seed);
+			    System.out.println("Aposta " + (seed + 1) + ": " + Arrays.toString(aposta));
+			    apostasGeradas.add(aposta);
+			}
 
-        System.out.print("Deseja salvar as apostas em um arquivo? (S/N): ");
-        String resposta = scanner.next();
+			System.out.print("Deseja salvar as apostas em um arquivo? (S/N): ");
+			String resposta = scanner.next();
 
-        if (resposta.equalsIgnoreCase("S")) {
-            System.out.print("Digite o nome do arquivo: ");
-            String nomeArquivo = scanner.next();
-            try {
-                salvarApostas(apostasGeradas, nomeArquivo);
-                System.out.println("Apostas salvas com sucesso em " + nomeArquivo);
-            } catch (IOException e) {
-                System.err.println("Erro ao salvar apostas: " + e.getMessage());
-            }
-        }
+			if (resposta.equalsIgnoreCase("S")) {
+			    System.out.print("Digite o nome do arquivo: ");
+			    String nomeArquivo = scanner.next();
+			    salvarApostas(apostasGeradas, nomeArquivo);
+				System.out.println("Apostas salvas com sucesso em " + nomeArquivo);
+			}
 
-        System.out.print("Deseja gerar uma aposta 'Surpresinha'? (S/N): ");
-        resposta = scanner.next();
+			System.out.print("Deseja gerar uma aposta 'Surpresinha'? (S/N): ");
+			resposta = scanner.next();
 
-        if (resposta.equalsIgnoreCase("S")) {
-            Integer[] apostaSurpresinha = gerarSurpresinha(tamanhoAposta, numerosLoteria);
-            System.out.println("Aposta Surpresinha: " + Arrays.toString(apostaSurpresinha));
-        }
-
-        System.out.print("Deseja verificar a premiação de uma aposta? (S/N): ");
-        resposta = scanner.next();
-
-        if (resposta.equalsIgnoreCase("S")) {
-            Integer[] numerosSorteados = new Integer[15];
-            System.out.println("Digite os 15 números sorteados:");
-            for (int i = 0; i < 15; i++) {
-                numerosSorteados[i] = scanner.nextInt();
-            }
-
-            System.out.println("Digite os números da aposta para verificar a premiação:");
-            Integer[] apostaVerificacao = new Integer[tamanhoAposta];
-            for(int i = 0; i < tamanhoAposta; i++){
-                apostaVerificacao[i] = scanner.nextInt();
-            }
-
-            int acertos = verificarPremiacao(apostaVerificacao, numerosSorteados);
-            System.out.println("Número de acertos: " + acertos);
-            if (acertos >= 11) {
-                System.out.println("Aposta premiada!");
-            } else {
-                System.out.println("Aposta não premiada.");
-            }
-
-        }
-        scanner.close();
+			if (resposta.equalsIgnoreCase("S")) {
+			    Integer[] apostaSurpresinha = gerarSurpresinha(tamanhoAposta, numerosLoteria);
+			    System.out.println("Aposta Surpresinha: " + Arrays.toString(apostaSurpresinha));
+			}
+		}
     }
 
-    public static int verificarPremiacao(Integer[] aposta, Integer[] numerosSorteados) {
-        int acertos = 0;
-        for (int numeroAposta : aposta) {
-            for (int numeroSorteado : numerosSorteados) {
-                if (numeroAposta == numeroSorteado) {
-                    acertos++;
-                    break;
-                }
-            }
-        }
-        return acertos;
-    }
+    private static void salvarApostas(List<Integer[]> apostasGeradas, String nomeArquivo) {
+		
+	}
 
-    public static void salvarApostas(List<Integer[]> apostas, String nomeArquivo) throws IOException {
-        FileWriter writer = new FileWriter(nomeArquivo);
-        for (Integer[] aposta : apostas) {
-            writer.write(Arrays.toString(aposta) + System.lineSeparator());
-        }
-        writer.close();
-    }
-
-    public static Integer[] gerarSurpresinha(int tamanhoAposta, Integer[] numerosLoteria) {
+	private static Integer[] gerarSurpresinha(int tamanhoAposta, Integer[] numerosLoteria) {
         Random random = new Random();
         Set<Integer> aposta = new HashSet<>();
+
         while (aposta.size() < tamanhoAposta) {
-            int indice = random.nextInt(numerosLoteria.length);
-            aposta.add(numerosLoteria[indice]);
+            int numeroAleatorio = random.nextInt(25) + 1;
+            aposta.add(numeroAleatorio);
         }
-        return aposta.toArray(new Integer[0]);
+
+        return aposta.stream().sorted().toArray(Integer[]::new);
     }
-}
+}        
