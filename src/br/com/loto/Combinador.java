@@ -138,9 +138,9 @@ public class Combinador<T> {
 			int tamanhoAposta;
 
 			do {
-			    System.out.print("Digite o tamanho da aposta (15 a 18): ");
+			    System.out.print("Digite o tamanho da aposta (15 a 20): ");
 			    tamanhoAposta = scanner.nextInt();
-			} while (tamanhoAposta < 15 || tamanhoAposta > 18);
+			} while (tamanhoAposta < 15 || tamanhoAposta > 20);
 
 			Combinador<Integer> combinador = new Combinador<>(tamanhoAposta, numerosLoteria);
 
