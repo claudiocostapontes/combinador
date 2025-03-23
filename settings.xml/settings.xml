@@ -36,7 +36,7 @@
 <xs:element minOccurs="0" name="localRepository" type="xs:string">
 <xs:annotation>
 <xs:documentation source="version">1.0.0+</xs:documentation>
-<xs:documentation source="description"> The local repository.<br><b>Default value is:</b> <code>${user.home}/.m2/repository</code> </xs:documentation>
+<xs:documentation source="description"> The local repository.<b>Default value is:</b> <code>${user.home}/.m2/repository</code> </xs:documentation>
 </xs:annotation>
 </xs:element>
 <xs:element minOccurs="0" name="interactiveMode" type="xs:boolean" default="true">
