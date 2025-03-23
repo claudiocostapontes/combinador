@@ -1,265 +1,524 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
 
-<!--
-Licensed to the Apache Software Foundation (ASF) under one
-or more contributor license agreements.  See the NOTICE file
-distributed with this work for additional information
-regarding copyright ownership.  The ASF licenses this file
-to you under the Apache License, Version 2.0 (the
-"License"); you may not use this file except in compliance
-with the License.  You may obtain a copy of the License at
+  http://www.apache.org/licenses/LICENSE-2.0
 
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing,
-software distributed under the License is distributed on an
-"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-KIND, either express or implied.  See the License for the
-specific language governing permissions and limitations
-under the License.
--->
-
-<!--
- | This is the configuration file for Maven. It can be specified at two levels:
- |
- |  1. User Level. This settings.xml file provides configuration for a single user,
- |                 and is normally provided in ${user.home}/.m2/settings.xml.
- |
- |                 NOTE: This location can be overridden with the CLI option:
- |
- |                 -s /path/to/user/settings.xml
- |
- |  2. Global Level. This settings.xml file provides configuration for all Maven
- |                 users on a machine (assuming they're all using the same Maven
- |                 installation). It's normally provided in
- |                 ${maven.conf}/settings.xml.
- |
- |                 NOTE: This location can be overridden with the CLI option:
- |
- |                 -gs /path/to/global/settings.xml
- |
- | The sections in this sample file are intended to give you a running start at
- | getting the most out of your Maven installation. Where appropriate, the default
- | values (values used when the setting is not specified) are provided.
- |
- |-->
-<settings xmlns="http://maven.apache.org/SETTINGS/1.2.0"
-          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.2.0 https://maven.apache.org/xsd/settings-1.2.0.xsd">
-  <!-- localRepository
-   | The path to the local repository maven will use to store artifacts.
-   |
-   | Default: ${user.home}/.m2/repository
-  <localRepository>/path/to/local/repo</localRepository>
-  -->
-
-  <!-- interactiveMode
-   | This will determine whether maven prompts you when it needs input. If set to false,
-   | maven will use a sensible default value, perhaps based on some other setting, for
-   | the parameter in question.
-   |
-   | Default: true
-  <interactiveMode>true</interactiveMode>
-  -->
-
-  <!-- offline
-   | Determines whether maven should attempt to connect to the network when executing a build.
-   | This will have an effect on artifact downloads, artifact deployment, and others.
-   |
-   | Default: false
-  <offline>false</offline>
-  -->
-
-  <!-- pluginGroups
-   | This is a list of additional group identifiers that will be searched when resolving plugins by their prefix, i.e.
-   | when invoking a command line like "mvn prefix:goal". Maven will automatically add the group identifiers
-   | "org.apache.maven.plugins" and "org.codehaus.mojo" if these are not already contained in the list.
-   |-->
-  <pluginGroups>
-    <!-- pluginGroup
-     | Specifies a further group identifier to use for plugin lookup.
-    <pluginGroup>com.your.plugins</pluginGroup>
-    -->
-  </pluginGroups>
-
-  <!-- TODO Since when can proxies be selected as depicted? -->
-  <!-- proxies
-   | This is a list of proxies which can be used on this machine to connect to the network.
-   | Unless otherwise specified (by system property or command-line switch), the first proxy
-   | specification in this list marked as active will be used.
-   |-->
-  <proxies>
-    <!-- proxy
-     | Specification for one proxy, to be used in connecting to the network.
-     |
-    <proxy>
-      <id>optional</id>
-      <active>true</active>
-      <protocol>http</protocol>
-      <username>proxyuser</username>
-      <password>proxypass</password>
-      <host>proxy.host.net</host>
-      <port>80</port>
-      <nonProxyHosts>local.net|some.host.com</nonProxyHosts>
-    </proxy>
-    -->
-  </proxies>
-
-  <!-- servers
-   | This is a list of authentication profiles, keyed by the server-id used within the system.
-   | Authentication profiles can be used whenever maven must make a connection to a remote server.
-   |-->
-  <servers>
-    <!-- server
-     | Specifies the authentication information to use when connecting to a particular server, identified by
-     | a unique name within the system (referred to by the 'id' attribute below).
-     |
-     | NOTE: You should either specify username/password OR privateKey/passphrase, since these pairings are
-     |       used together.
-     |
-    <server>
-      <id>deploymentRepo</id>
-      <username>repouser</username>
-      <password>repopwd</password>
-    </server>
-    -->
-
-    <!-- Another sample, using keys to authenticate.
-    <server>
-      <id>siteServer</id>
-      <privateKey>/path/to/private/key</privateKey>
-      <passphrase>optional; leave empty if not used.</passphrase>
-    </server>
-    -->
-  </servers>
-
-  <!-- mirrors
-   | This is a list of mirrors to be used in downloading artifacts from remote repositories.
-   |
-   | It works like this: a POM may declare a repository to use in resolving certain artifacts.
-   | However, this repository may have problems with heavy traffic at times, so people have mirrored
-   | it to several places.
-   |
-   | That repository definition will have a unique id, so we can create a mirror reference for that
-   | repository, to be used as an alternate download site. The mirror site will be the preferred
-   | server for that repository.
-   |-->
-  <mirrors>
-    <!-- mirror
-     | Specifies a repository mirror site to use instead of a given repository. The repository that
-     | this mirror serves has an ID that matches the mirrorOf element of this mirror. IDs are used
-     | for inheritance and direct lookup purposes, and must be unique across the set of mirrors.
-     |
-    <mirror>
-      <id>mirrorId</id>
-      <mirrorOf>repositoryId</mirrorOf>
-      <name>Human Readable Name for this Mirror.</name>
-      <url>http://my.repository.com/repo/path</url>
-    </mirror>
-     -->
-    <mirror>
-      <id>maven-default-http-blocker</id>
-      <mirrorOf>external:http:*</mirrorOf>
-      <name>Pseudo repository to mirror external repositories initially using HTTP.</name>
-      <url>http://0.0.0.0/</url>
-      <blocked>true</blocked>
-    </mirror>
-  </mirrors>
-
-  <!-- profiles
-   | This is a list of profiles which can be activated in a variety of ways, and which can modify
-   | the build process. Profiles provided in the settings.xml are intended to provide local machine-
-   | specific paths and repository locations which allow the build to work in the local environment.
-   |
-   | For example, if you have an integration testing plugin - like cactus - that needs to know where
-   | your Tomcat instance is installed, you can provide a variable here such that the variable is
-   | dereferenced during the build process to configure the cactus plugin.
-   |
-   | As noted above, profiles can be activated in a variety of ways. One way - the activeProfiles
-   | section of this document (settings.xml) - will be discussed later. Another way essentially
-   | relies on the detection of a property, either matching a particular value for the property,
-   | or merely testing its existence. Profiles can also be activated by JDK version prefix, where a
-   | value of '1.4' might activate a profile when the build is executed on a JDK version of '1.4.2_07'.
-   | Finally, the list of active profiles can be specified directly from the command line.
-   |
-   | NOTE: For profiles defined in the settings.xml, you are restricted to specifying only artifact
-   |       repositories, plugin repositories, and free-form properties to be used as configuration
-   |       variables for plugins in the POM.
-   |
-   |-->
-  <profiles>
-    <!-- profile
-     | Specifies a set of introductions to the build process, to be activated using one or more of the
-     | mechanisms described above. For inheritance purposes, and to activate profiles via <activatedProfiles/>
-     | or the command line, profiles have to have an ID that is unique.
-     |
-     | An encouraged best practice for profile identification is to use a consistent naming convention
-     | for profiles, such as 'env-dev', 'env-test', 'env-production', 'user-jdcasey', 'user-brett', etc.
-     | This will make it more intuitive to understand what the set of introduced profiles is attempting
-     | to accomplish, particularly when you only have a list of profile id's for debug.
-     |
-     | This profile example uses the JDK version to trigger activation, and provides a JDK-specific repo.
-    <profile>
-      <id>jdk-1.4</id>
-
-      <activation>
-        <jdk>1.4</jdk>
-      </activation>
-
-      <repositories>
-        <repository>
-          <id>jdk14</id>
-          <name>Repository for JDK 1.4 builds</name>
-          <url>http://www.myhost.com/maven/jdk14</url>
-          <layout>default</layout>
-          <snapshotPolicy>always</snapshotPolicy>
-        </repository>
-      </repositories>
-    </profile>
-    -->
-
-    <!--
-     | Here is another profile, activated by the property 'target-env' with a value of 'dev', which
-     | provides a specific path to the Tomcat instance. To use this, your plugin configuration might
-     | hypothetically look like:
-     |
-     | ...
-     | <plugin>
-     |   <groupId>org.myco.myplugins</groupId>
-     |   <artifactId>myplugin</artifactId>
-     |
-     |   <configuration>
-     |     <tomcatLocation>${tomcatPath}</tomcatLocation>
-     |   </configuration>
-     | </plugin>
-     | ...
-     |
-     | NOTE: If you just wanted to inject this configuration whenever someone set 'target-env' to
-     |       anything, you could just leave off the <value/> inside the activation-property.
-     |
-    <profile>
-      <id>env-dev</id>
-
-      <activation>
-        <property>
-          <name>target-env</name>
-          <value>dev</value>
-        </property>
-      </activation>
-
-      <properties>
-        <tomcatPath>/path/to/tomcat/instance</tomcatPath>
-      </properties>
-    </profile>
-    -->
-  </profiles>
-
-  <!-- activeProfiles
-   | List of profiles that are active for all builds.
-   |
-  <activeProfiles>
-    <activeProfile>alwaysActiveProfile</activeProfile>
-    <activeProfile>anotherAlwaysActiveProfile</activeProfile>
-  </activeProfiles>
-  -->
-</settings>
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+ -->
+<!--  =================== DO NOT EDIT THIS FILE ====================          -->
+<!--  Generated by Modello 1.11,                                              -->
+<!--  any modifications will be overwritten.                                  -->
+<!--  ==============================================================          -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://maven.apache.org/SETTINGS/1.2.0" elementFormDefault="qualified" targetNamespace="http://maven.apache.org/SETTINGS/1.2.0">
+<xs:element name="settings" type="Settings">
+<xs:annotation>
+<xs:documentation source="version">1.0.0+</xs:documentation>
+<xs:documentation source="description"> Root element of the user configuration file. </xs:documentation>
+</xs:annotation>
+</xs:element>
+<xs:complexType name="Settings">
+<xs:annotation>
+<xs:documentation source="version">1.0.0+</xs:documentation>
+<xs:documentation source="description"> Root element of the user configuration file. </xs:documentation>
+</xs:annotation>
+<xs:all>
+<xs:element minOccurs="0" name="localRepository" type="xs:string">
+<xs:annotation>
+<xs:documentation source="version">1.0.0+</xs:documentation>
+<xs:documentation source="description"> The local repository.<br><b>Default value is:</b> <code>${user.home}/.m2/repository</code> </xs:documentation>
+</xs:annotation>
+</xs:element>
+<xs:element minOccurs="0" name="interactiveMode" type="xs:boolean" default="true">
+<xs:annotation>
+<xs:documentation source="version">1.0.0+</xs:documentation>
+<xs:documentation source="description"> Whether Maven should attempt to interact with the user for input. </xs:documentation>
+</xs:annotation>
+</xs:element>
+<xs:element minOccurs="0" name="usePluginRegistry" type="xs:boolean" default="false">
+<xs:annotation>
+<xs:documentation source="version">1.0.0+</xs:documentation>
+<xs:documentation source="description"> Whether Maven should use the plugin-registry.xml file to manage plugin versions. </xs:documentation>
+</xs:annotation>
+</xs:element>
+<xs:element minOccurs="0" name="offline" type="xs:boolean" default="false">
+<xs:annotation>
+<xs:documentation source="version">1.0.0+</xs:documentation>
+<xs:documentation source="description"> Indicate whether maven should operate in offline mode full-time. </xs:documentation>
+</xs:annotation>
+</xs:element>
+<xs:element minOccurs="0" name="proxies">
+<xs:annotation>
+<xs:documentation source="version">1.0.0+</xs:documentation>
+<xs:documentation source="description"> Configuration for different proxy profiles. Multiple proxy profiles might come in handy for anyone working from a notebook or other mobile platform, to enable easy switching of entire proxy configurations by simply specifying the profile id, again either from the command line or from the defaults section below. </xs:documentation>
+</xs:annotation>
+<xs:complexType>
+<xs:sequence>
+<xs:element name="proxy" minOccurs="0" maxOccurs="unbounded" type="Proxy"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element minOccurs="0" name="servers">
+<xs:annotation>
+<xs:documentation source="version">1.0.0+</xs:documentation>
+<xs:documentation source="description"> Configuration of server-specific settings, mainly authentication method. This allows configuration of authentication on a per-server basis. </xs:documentation>
+</xs:annotation>
+<xs:complexType>
+<xs:sequence>
+<xs:element name="server" minOccurs="0" maxOccurs="unbounded" type="Server"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element minOccurs="0" name="mirrors">
+<xs:annotation>
+<xs:documentation source="version">1.0.0+</xs:documentation>
+<xs:documentation source="description"> Configuration of download mirrors for repositories. </xs:documentation>
+</xs:annotation>
+<xs:complexType>
+<xs:sequence>
+<xs:element name="mirror" minOccurs="0" maxOccurs="unbounded" type="Mirror"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element minOccurs="0" name="profiles">
+<xs:annotation>
+<xs:documentation source="version">1.0.0+</xs:documentation>
+<xs:documentation source="description"> Configuration of build profiles for adjusting the build according to environmental parameters. </xs:documentation>
+</xs:annotation>
+<xs:complexType>
+<xs:sequence>
+<xs:element name="profile" minOccurs="0" maxOccurs="unbounded" type="Profile"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element minOccurs="0" name="activeProfiles">
+<xs:annotation>
+<xs:documentation source="version">1.0.0+</xs:documentation>
+<xs:documentation source="description"> List of manually-activated build profiles, specified in the order in which they should be applied. </xs:documentation>
+</xs:annotation>
+<xs:complexType>
+<xs:sequence>
+<xs:element name="activeProfile" minOccurs="0" maxOccurs="unbounded" type="xs:string"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element minOccurs="0" name="pluginGroups">
+<xs:annotation>
+<xs:documentation source="version">1.0.0+</xs:documentation>
+<xs:documentation source="description"> List of groupIds to search for a plugin when that plugin groupId is not explicitly provided. </xs:documentation>
+</xs:annotation>
+<xs:complexType>
+<xs:sequence>
+<xs:element name="pluginGroup" minOccurs="0" maxOccurs="unbounded" type="xs:string"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+</xs:all>
+</xs:complexType>
+<xs:complexType name="Proxy">
+<xs:annotation>
+<xs:documentation source="version">1.0.0+</xs:documentation>
+<xs:documentation source="description"> The <code>&lt;proxy&gt;</code> element contains informations required to a proxy settings. </xs:documentation>
+</xs:annotation>
+<xs:all>
+<xs:element minOccurs="0" name="active" type="xs:boolean" default="true">
+<xs:annotation>
+<xs:documentation source="version">1.0.0+</xs:documentation>
+<xs:documentation source="description"> Whether this proxy configuration is the active one. </xs:documentation>
+</xs:annotation>
+</xs:element>
+<xs:element minOccurs="0" name="protocol" type="xs:string" default="http">
+<xs:annotation>
+<xs:documentation source="version">1.0.0+</xs:documentation>
+<xs:documentation source="description"> The proxy protocol. </xs:documentation>
+</xs:annotation>
+</xs:element>
+<xs:element minOccurs="0" name="username" type="xs:string">
+<xs:annotation>
+<xs:documentation source="version">1.0.0+</xs:documentation>
+<xs:documentation source="description"> The proxy user. </xs:documentation>
+</xs:annotation>
+</xs:element>
+<xs:element minOccurs="0" name="password" type="xs:string">
+<xs:annotation>
+<xs:documentation source="version">1.0.0+</xs:documentation>
+<xs:documentation source="description"> The proxy password. </xs:documentation>
+</xs:annotation>
+</xs:element>
+<xs:element minOccurs="0" name="port" type="xs:int" default="8080">
+<xs:annotation>
+<xs:documentation source="version">1.0.0+</xs:documentation>
+<xs:documentation source="description"> The proxy port. </xs:documentation>
+</xs:annotation>
+</xs:element>
+<xs:element minOccurs="0" name="host" type="xs:string">
+<xs:annotation>
+<xs:documentation source="version">1.0.0+</xs:documentation>
+<xs:documentation source="description"> The proxy host. </xs:documentation>
+</xs:annotation>
+</xs:element>
+<xs:element minOccurs="0" name="nonProxyHosts" type="xs:string">
+<xs:annotation>
+<xs:documentation source="version">1.0.0+</xs:documentation>
+<xs:documentation source="description"> The list of non-proxied hosts (delimited by |). </xs:documentation>
+</xs:annotation>
+</xs:element>
+<xs:element minOccurs="0" name="id" type="xs:string" default="default">
+<xs:annotation>
+<xs:documentation source="version">1.0.0+</xs:documentation>
+</xs:annotation>
+</xs:element>
+</xs:all>
+</xs:complexType>
+<xs:complexType name="Server">
+<xs:annotation>
+<xs:documentation source="version">1.0.0+</xs:documentation>
+<xs:documentation source="description"> The <code>&lt;server&gt;</code> element contains informations required to a server settings. </xs:documentation>
+</xs:annotation>
+<xs:all>
+<xs:element minOccurs="0" name="username" type="xs:string">
+<xs:annotation>
+<xs:documentation source="version">1.0.0+</xs:documentation>
+<xs:documentation source="description"> The username used to authenticate. </xs:documentation>
+</xs:annotation>
+</xs:element>
+<xs:element minOccurs="0" name="password" type="xs:string">
+<xs:annotation>
+<xs:documentation source="version">1.0.0+</xs:documentation>
+<xs:documentation source="description"> The password used in conjunction with the username to authenticate. </xs:documentation>
+</xs:annotation>
+</xs:element>
+<xs:element minOccurs="0" name="privateKey" type="xs:string">
+<xs:annotation>
+<xs:documentation source="version">1.0.0+</xs:documentation>
+<xs:documentation source="description"> The private key location used to authenticate. </xs:documentation>
+</xs:annotation>
+</xs:element>
+<xs:element minOccurs="0" name="passphrase" type="xs:string">
+<xs:annotation>
+<xs:documentation source="version">1.0.0+</xs:documentation>
+<xs:documentation source="description"> The passphrase used in conjunction with the privateKey to authenticate. </xs:documentation>
+</xs:annotation>
+</xs:element>
+<xs:element minOccurs="0" name="filePermissions" type="xs:string">
+<xs:annotation>
+<xs:documentation source="version">1.0.0+</xs:documentation>
+<xs:documentation source="description"> The permissions for files when they are created. </xs:documentation>
+</xs:annotation>
+</xs:element>
+<xs:element minOccurs="0" name="directoryPermissions" type="xs:string">
+<xs:annotation>
+<xs:documentation source="version">1.0.0+</xs:documentation>
+<xs:documentation source="description"> The permissions for directories when they are created. </xs:documentation>
+</xs:annotation>
+</xs:element>
+<xs:element minOccurs="0" name="configuration">
+<xs:annotation>
+<xs:documentation source="version">0.0.0+</xs:documentation>
+<xs:documentation source="description"> Extra configuration for the transport layer. </xs:documentation>
+</xs:annotation>
+<xs:complexType>
+<xs:sequence>
+<xs:any minOccurs="0" maxOccurs="unbounded" processContents="skip"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element minOccurs="0" name="id" type="xs:string" default="default">
+<xs:annotation>
+<xs:documentation source="version">1.0.0+</xs:documentation>
+</xs:annotation>
+</xs:element>
+</xs:all>
+</xs:complexType>
+<xs:complexType name="Mirror">
+<xs:annotation>
+<xs:documentation source="version">1.0.0+</xs:documentation>
+<xs:documentation source="description"> A download mirror for a given repository. </xs:documentation>
+</xs:annotation>
+<xs:all>
+<xs:element minOccurs="0" name="mirrorOf" type="xs:string">
+<xs:annotation>
+<xs:documentation source="version">1.0.0+</xs:documentation>
+<xs:documentation source="description"> The server ID of the repository being mirrored, e.g., "central". This MUST NOT match the mirror id. </xs:documentation>
+</xs:annotation>
+</xs:element>
+<xs:element minOccurs="0" name="name" type="xs:string">
+<xs:annotation>
+<xs:documentation source="version">1.0.0+</xs:documentation>
+<xs:documentation source="description"> The optional name that describes the mirror. </xs:documentation>
+</xs:annotation>
+</xs:element>
+<xs:element minOccurs="0" name="url" type="xs:string">
+<xs:annotation>
+<xs:documentation source="version">1.0.0+</xs:documentation>
+<xs:documentation source="description">The URL of the mirror repository.</xs:documentation>
+</xs:annotation>
+</xs:element>
+<xs:element minOccurs="0" name="layout" type="xs:string" default="default">
+<xs:annotation>
+<xs:documentation source="version">1.1.0+</xs:documentation>
+<xs:documentation source="description">The layout of the mirror repository. Since Maven 3.</xs:documentation>
+</xs:annotation>
+</xs:element>
+<xs:element minOccurs="0" name="mirrorOfLayouts" type="xs:string" default="default,legacy">
+<xs:annotation>
+<xs:documentation source="version">1.1.0+</xs:documentation>
+<xs:documentation source="description"> The layouts of repositories being mirrored. This value can be used to restrict the usage of the mirror to repositories with a matching layout (apart from a matching id). Since Maven 3. </xs:documentation>
+</xs:annotation>
+</xs:element>
+<xs:element minOccurs="0" name="blocked" type="xs:boolean" default="false">
+<xs:annotation>
+<xs:documentation source="version">1.2.0+</xs:documentation>
+<xs:documentation source="description"> Whether this mirror should be blocked from any download request but fail the download process, explaining why. </xs:documentation>
+</xs:annotation>
+</xs:element>
+<xs:element minOccurs="0" name="id" type="xs:string" default="default">
+<xs:annotation>
+<xs:documentation source="version">1.0.0+</xs:documentation>
+</xs:annotation>
+</xs:element>
+</xs:all>
+</xs:complexType>
+<xs:complexType name="Profile">
+<xs:annotation>
+<xs:documentation source="version">1.0.0+</xs:documentation>
+<xs:documentation source="description"> Modifications to the build process which is keyed on some sort of environmental parameter. </xs:documentation>
+</xs:annotation>
+<xs:all>
+<xs:element minOccurs="0" name="activation" type="Activation">
+<xs:annotation>
+<xs:documentation source="version">1.0.0+</xs:documentation>
+<xs:documentation source="description"> The conditional logic which will automatically trigger the inclusion of this profile. </xs:documentation>
+</xs:annotation>
+</xs:element>
+<xs:element minOccurs="0" name="properties">
+<xs:annotation>
+<xs:documentation source="version">0.0.0+</xs:documentation>
+<xs:documentation source="description"> Extended configuration specific to this profile goes here. Contents take the form of <code>&lt;property.name&gt;property.value&lt;/property.name&gt;</code> </xs:documentation>
+</xs:annotation>
+<xs:complexType>
+<xs:sequence>
+<xs:any minOccurs="0" maxOccurs="unbounded" processContents="skip"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element minOccurs="0" name="repositories">
+<xs:annotation>
+<xs:documentation source="version">1.0.0+</xs:documentation>
+<xs:documentation source="description"> The lists of the remote repositories. </xs:documentation>
+</xs:annotation>
+<xs:complexType>
+<xs:sequence>
+<xs:element name="repository" minOccurs="0" maxOccurs="unbounded" type="Repository"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element minOccurs="0" name="pluginRepositories">
+<xs:annotation>
+<xs:documentation source="version">1.0.0+</xs:documentation>
+<xs:documentation source="description"> The lists of the remote repositories for discovering plugins. </xs:documentation>
+</xs:annotation>
+<xs:complexType>
+<xs:sequence>
+<xs:element name="pluginRepository" minOccurs="0" maxOccurs="unbounded" type="Repository"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element minOccurs="0" name="id" type="xs:string" default="default">
+<xs:annotation>
+<xs:documentation source="version">1.0.0+</xs:documentation>
+</xs:annotation>
+</xs:element>
+</xs:all>
+</xs:complexType>
+<xs:complexType name="Repository">
+<xs:annotation>
+<xs:documentation source="version">1.0.0+</xs:documentation>
+<xs:documentation source="description"> Repository contains the information needed for establishing connections with remote repository </xs:documentation>
+</xs:annotation>
+<xs:all>
+<xs:element minOccurs="0" name="releases" type="RepositoryPolicy">
+<xs:annotation>
+<xs:documentation source="version">1.0.0+</xs:documentation>
+<xs:documentation source="description"> How to handle downloading of releases from this repository </xs:documentation>
+</xs:annotation>
+</xs:element>
+<xs:element minOccurs="0" name="snapshots" type="RepositoryPolicy">
+<xs:annotation>
+<xs:documentation source="version">1.0.0+</xs:documentation>
+<xs:documentation source="description"> How to handle downloading of snapshots from this repository </xs:documentation>
+</xs:annotation>
+</xs:element>
+<xs:element minOccurs="0" name="id" type="xs:string">
+<xs:annotation>
+<xs:documentation source="version">1.0.0+</xs:documentation>
+<xs:documentation source="description"> A unique identifier for a repository. </xs:documentation>
+</xs:annotation>
+</xs:element>
+<xs:element minOccurs="0" name="name" type="xs:string">
+<xs:annotation>
+<xs:documentation source="version">1.0.0+</xs:documentation>
+<xs:documentation source="description"> Human readable name of the repository. </xs:documentation>
+</xs:annotation>
+</xs:element>
+<xs:element minOccurs="0" name="url" type="xs:string">
+<xs:annotation>
+<xs:documentation source="version">1.0.0+</xs:documentation>
+<xs:documentation source="description"> The url of the repository. </xs:documentation>
+</xs:annotation>
+</xs:element>
+<xs:element minOccurs="0" name="layout" type="xs:string" default="default">
+<xs:annotation>
+<xs:documentation source="version">1.0.0+</xs:documentation>
+<xs:documentation source="description"> The type of layout this repository uses for locating and storing artifacts - can be "legacy" or "default". </xs:documentation>
+</xs:annotation>
+</xs:element>
+</xs:all>
+</xs:complexType>
+<xs:complexType name="RepositoryPolicy">
+<xs:annotation>
+<xs:documentation source="version">1.0.0+</xs:documentation>
+<xs:documentation source="description">Download policy</xs:documentation>
+</xs:annotation>
+<xs:all>
+<xs:element minOccurs="0" name="enabled" type="xs:boolean" default="true">
+<xs:annotation>
+<xs:documentation source="version">1.0.0+</xs:documentation>
+<xs:documentation source="description"> Whether to use this repository for downloading this type of artifact. </xs:documentation>
+</xs:annotation>
+</xs:element>
+<xs:element minOccurs="0" name="updatePolicy" type="xs:string">
+<xs:annotation>
+<xs:documentation source="version">1.0.0+</xs:documentation>
+<xs:documentation source="description"> The frequency for downloading updates - can be "always", "daily" (default), "interval:XXX" (in minutes) or "never" (only if it doesn't exist locally). </xs:documentation>
+</xs:annotation>
+</xs:element>
+<xs:element minOccurs="0" name="checksumPolicy" type="xs:string">
+<xs:annotation>
+<xs:documentation source="version">1.0.0+</xs:documentation>
+<xs:documentation source="description"> What to do when verification of an artifact checksum fails - warn, fail, etc. Valid values are "fail" or "warn". </xs:documentation>
+</xs:annotation>
+</xs:element>
+</xs:all>
+</xs:complexType>
+<xs:complexType name="Activation">
+<xs:annotation>
+<xs:documentation source="version">1.0.0+</xs:documentation>
+<xs:documentation source="description"> The conditions within the build runtime environment which will trigger the automatic inclusion of the parent build profile. </xs:documentation>
+</xs:annotation>
+<xs:all>
+<xs:element minOccurs="0" name="activeByDefault" type="xs:boolean" default="false">
+<xs:annotation>
+<xs:documentation source="version">1.0.0+</xs:documentation>
+<xs:documentation source="description"> Flag specifying whether this profile is active as a default. </xs:documentation>
+</xs:annotation>
+</xs:element>
+<xs:element minOccurs="0" name="jdk" type="xs:string">
+<xs:annotation>
+<xs:documentation source="version">1.0.0+</xs:documentation>
+<xs:documentation source="description"> Specifies that this profile will be activated when a matching JDK is detected. </xs:documentation>
+</xs:annotation>
+</xs:element>
+<xs:element minOccurs="0" name="os" type="ActivationOS">
+<xs:annotation>
+<xs:documentation source="version">1.0.0+</xs:documentation>
+<xs:documentation source="description"> Specifies that this profile will be activated when matching OS attributes are detected. </xs:documentation>
+</xs:annotation>
+</xs:element>
+<xs:element minOccurs="0" name="property" type="ActivationProperty">
+<xs:annotation>
+<xs:documentation source="version">1.0.0+</xs:documentation>
+<xs:documentation source="description"> Specifies that this profile will be activated when this System property is specified. </xs:documentation>
+</xs:annotation>
+</xs:element>
+<xs:element minOccurs="0" name="file" type="ActivationFile">
+<xs:annotation>
+<xs:documentation source="version">1.0.0+</xs:documentation>
+<xs:documentation source="description"> Specifies that this profile will be activated based on existence of a file. </xs:documentation>
+</xs:annotation>
+</xs:element>
+</xs:all>
+</xs:complexType>
+<xs:complexType name="ActivationOS">
+<xs:annotation>
+<xs:documentation source="version">1.0.0+</xs:documentation>
+<xs:documentation source="description"> This is an activator which will detect an operating system's attributes in order to activate its profile. </xs:documentation>
+</xs:annotation>
+<xs:all>
+<xs:element minOccurs="0" name="name" type="xs:string">
+<xs:annotation>
+<xs:documentation source="version">1.0.0+</xs:documentation>
+<xs:documentation source="description"> The name of the OS to be used to activate a profile. </xs:documentation>
+</xs:annotation>
+</xs:element>
+<xs:element minOccurs="0" name="family" type="xs:string">
+<xs:annotation>
+<xs:documentation source="version">1.0.0+</xs:documentation>
+<xs:documentation source="description"> The general family of the OS to be used to activate a profile (e.g. 'windows') </xs:documentation>
+</xs:annotation>
+</xs:element>
+<xs:element minOccurs="0" name="arch" type="xs:string">
+<xs:annotation>
+<xs:documentation source="version">1.0.0+</xs:documentation>
+<xs:documentation source="description"> The architecture of the OS to be used to activate a profile. </xs:documentation>
+</xs:annotation>
+</xs:element>
+<xs:element minOccurs="0" name="version" type="xs:string">
+<xs:annotation>
+<xs:documentation source="version">1.0.0+</xs:documentation>
+<xs:documentation source="description"> The version of the OS to be used to activate a profile. </xs:documentation>
+</xs:annotation>
+</xs:element>
+</xs:all>
+</xs:complexType>
+<xs:complexType name="ActivationProperty">
+<xs:annotation>
+<xs:documentation source="version">1.0.0+</xs:documentation>
+<xs:documentation source="description"> This is the property specification used to activate a profile. If the value field is empty, then the existence of the named property will activate the profile, otherwise it does a case-sensitive match against the property value as well. </xs:documentation>
+</xs:annotation>
+<xs:all>
+<xs:element minOccurs="0" name="name" type="xs:string">
+<xs:annotation>
+<xs:documentation source="version">1.0.0+</xs:documentation>
+<xs:documentation source="description"> The name of the property to be used to activate a profile. </xs:documentation>
+</xs:annotation>
+</xs:element>
+<xs:element minOccurs="0" name="value" type="xs:string">
+<xs:annotation>
+<xs:documentation source="version">1.0.0+</xs:documentation>
+<xs:documentation source="description"> The value of the property to be used to activate a profile. </xs:documentation>
+</xs:annotation>
+</xs:element>
+</xs:all>
+</xs:complexType>
+<xs:complexType name="ActivationFile">
+<xs:annotation>
+<xs:documentation source="version">1.0.0+</xs:documentation>
+<xs:documentation source="description"> This is the file specification used to activate a profile. The missing value will be a the location of a file that needs to exist, and if it doesn't the profile must run. On the other hand exists will test for the existence of the file and if it is there will run the profile. </xs:documentation>
+</xs:annotation>
+<xs:all>
+<xs:element minOccurs="0" name="missing" type="xs:string">
+<xs:annotation>
+<xs:documentation source="version">1.0.0+</xs:documentation>
+<xs:documentation source="description"> The name of the file that should be missing to activate a profile. </xs:documentation>
+</xs:annotation>
+</xs:element>
+<xs:element minOccurs="0" name="exists" type="xs:string">
+<xs:annotation>
+<xs:documentation source="version">1.0.0+</xs:documentation>
+<xs:documentation source="description"> The name of the file that should exist to activate a profile. </xs:documentation>
+</xs:annotation>
+</xs:element>
+</xs:all>
+</xs:complexType>
+</xs:schema>
