@@ -18,7 +18,7 @@ public class NovosSeeds {
                 tamanhoAposta = scanner.nextInt();
             } while (tamanhoAposta < 15 || tamanhoAposta > 20);
 
-            Combinador<Integer> combinador = new Combinador<>(tamanhoAposta, numerosLoteria);
+            Combinador combinador = new Combinador(tamanhoAposta, numerosLoteria);
 
             System.out.print("Digite a quantidade de apostas a serem geradas: ");
             int quantidadeApostas = scanner.nextInt();

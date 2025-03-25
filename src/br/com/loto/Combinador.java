@@ -1,106 +1,50 @@
 package br.com.loto;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.Scanner;
-import java.util.Set;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.*;
 import java.util.stream.Collectors;
 
-public class Combinador<T> {
-    private final int cnt;
-    private final T[] items;
-    private final List<int[]> somatorios;
+public class Combinador {
 
-    public Combinador(int cnt, T[] items) {
-        this.cnt = cnt;
-        this.items = items;
-        this.somatorios = new ArrayList<>();
-
-        int[] line0 = new int[cnt + 1];
-        line0[0] = 1;
-        this.somatorios.add(line0);
-
-        for (int itLine = 1; itLine <= cnt; itLine++) {
-            int[] prevLine = this.somatorios.get(itLine - 1);
-            int[] newLine = new int[line0.length];
-            for (int itCol = 0; itCol < newLine.length; itCol++) {
-                newLine[itCol] = (itCol > 0 ? newLine[itCol - 1] : 0) + prevLine[itCol];
-            }
-            this.somatorios.add(newLine);
-        }
-    }
-
-    public T[] pegarCombinacao(int seed) {
-        List<Integer> indices = gerarIndices(this.somatorios, this.items.length - this.cnt, this.cnt, seed);
-        return indices.stream()
-                .map(i -> this.items[i])
-                .toArray(i -> Arrays.copyOf(this.items, i));
-    }
-
-    private static List<Integer> gerarIndices(List<int[]> lines, int fs, int ts, int num) {
-        List<Integer> indices = new ArrayList<>();
-        if (ts <= 0) {
-            return indices;
-        }
-
-        int[] line = lines.get(ts);
-        int min = 0;
-
-        for (int itFs = 0; itFs <= fs; itFs++) {
-            int max = min + line[itFs];
-            if (num < max) {
-                int num2 = num - min;
-                indices.add(fs - itFs);
-                List<Integer> subIndices = gerarIndices(lines, itFs, ts - 1, num2);
-                for (int idx : subIndices) {
-                    indices.add(fs - itFs + idx + 1);
-                }
-                return indices;
-            }
-            min = max;
-        }
-
-        throw new IllegalArgumentException("O parâmetro deve ser menor que " + min);
-    }
-
-    private static Map<Integer, Integer> frequenciaNumeros = new HashMap<>();
-
+	private static final Map<Integer, Integer> FREQUENCIA_NUMEROS = new HashMap<>();
+    private static final int TOTAL_NUMEROS_LOTERIA = 25;
+    
     static {
-        frequenciaNumeros.put(20, 1776);
-        frequenciaNumeros.put(10, 1763);
-        frequenciaNumeros.put(11, 1761);
-        frequenciaNumeros.put(25, 1751);
-        frequenciaNumeros.put(13, 1739);
-        frequenciaNumeros.put(14, 1728);
-        frequenciaNumeros.put(24, 1728);
-        frequenciaNumeros.put(3, 1723);
-        frequenciaNumeros.put(5, 1720);
-        frequenciaNumeros.put(4, 1706);
-        frequenciaNumeros.put(22, 1702);
-        frequenciaNumeros.put(12, 1701);
-        frequenciaNumeros.put(19, 1696);
-        frequenciaNumeros.put(2, 1695);
-        frequenciaNumeros.put(18, 1695);
-        frequenciaNumeros.put(9, 1695);
-        frequenciaNumeros.put(1, 1692);
-        frequenciaNumeros.put(21, 1688);
-        frequenciaNumeros.put(15, 1686);
-        frequenciaNumeros.put(17, 1672);
-        frequenciaNumeros.put(23, 1668);
-        frequenciaNumeros.put(7, 1660);
-        frequenciaNumeros.put(6, 1649);
-        frequenciaNumeros.put(8, 1641);
-        frequenciaNumeros.put(16, 1635);
+        FREQUENCIA_NUMEROS.put(20, 1776);
+        FREQUENCIA_NUMEROS.put(10, 1763);
+        FREQUENCIA_NUMEROS.put(11, 1761);
+        FREQUENCIA_NUMEROS.put(25, 1751);
+        FREQUENCIA_NUMEROS.put(13, 1739);
+        FREQUENCIA_NUMEROS.put(14, 1728);
+        FREQUENCIA_NUMEROS.put(24, 1728);
+        FREQUENCIA_NUMEROS.put(3, 1723);
+        FREQUENCIA_NUMEROS.put(5, 1720);
+        FREQUENCIA_NUMEROS.put(4, 1706);
+        FREQUENCIA_NUMEROS.put(22, 1702);
+        FREQUENCIA_NUMEROS.put(12, 1701);
+        FREQUENCIA_NUMEROS.put(19, 1696);
+        FREQUENCIA_NUMEROS.put(2, 1695);
+        FREQUENCIA_NUMEROS.put(18, 1695);
+        FREQUENCIA_NUMEROS.put(9, 1695);
+        FREQUENCIA_NUMEROS.put(1, 1692);
+        FREQUENCIA_NUMEROS.put(21, 1688);
+        FREQUENCIA_NUMEROS.put(15, 1686);
+        FREQUENCIA_NUMEROS.put(17, 1672);
+        FREQUENCIA_NUMEROS.put(23, 1668);
+        FREQUENCIA_NUMEROS.put(7, 1660);
+        FREQUENCIA_NUMEROS.put(6, 1649);
+        FREQUENCIA_NUMEROS.put(8, 1641);
+        FREQUENCIA_NUMEROS.put(16, 1635);
     }
 
+    public Combinador(int tamanhoAposta, Integer[] numerosLoteria) {
+	}
+
+	// Métodos de geração de apostas com base na frequência
+    
     public static List<Integer> getNumerosMaisFrequentes(int quantidade) {
-        return frequenciaNumeros.entrySet().stream()
+        return FREQUENCIA_NUMEROS.entrySet().stream()
                 .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
                 .limit(quantidade)
                 .map(Map.Entry::getKey)
@@ -108,85 +52,143 @@ public class Combinador<T> {
     }
 
     public static List<Integer> getNumerosMenosFrequentes(int quantidade) {
-        return frequenciaNumeros.entrySet().stream()
+        return FREQUENCIA_NUMEROS.entrySet().stream()
                 .sorted(Map.Entry.comparingByValue())
                 .limit(quantidade)
                 .map(Map.Entry::getKey)
                 .collect(Collectors.toList());
     }
 
-    public static Integer[] gerarApostaComEstatisticas(int tamanhoAposta, int quantidadeMaisFrequentes, int quantidadeMenosFrequentes) {
-        List<Integer> numerosMais = getNumerosMaisFrequentes(quantidadeMaisFrequentes);
-        List<Integer> numerosMenos = getNumerosMenosFrequentes(quantidadeMenosFrequentes);
-        Set<Integer> aposta = new HashSet<>();
+    public static Integer[] gerarApostaMaisFrequentes(int tamanhoAposta) {
+        return getNumerosMaisFrequentes(tamanhoAposta).toArray(Integer[]::new);
+    }
 
-        aposta.addAll(numerosMais);
-        aposta.addAll(numerosMenos);
+    public static Integer[] gerarApostaMenosFrequentes(int tamanhoAposta) {
+        return getNumerosMenosFrequentes(tamanhoAposta).toArray(Integer[]::new);
+    }
+
+    public static Integer[] gerarApostaIntervalo(int inicioFrequencia, int fimFrequencia, int tamanhoAposta) {
+        if (inicioFrequencia < 1 || fimFrequencia > FREQUENCIA_NUMEROS.size() || inicioFrequencia > fimFrequencia) {
+            throw new IllegalArgumentException("Intervalo de frequência inválido.");
+        }
+
+        List<Integer> numerosIntervalo = FREQUENCIA_NUMEROS.entrySet().stream()
+                .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+                .skip(inicioFrequencia - 1)
+                .limit(fimFrequencia - inicioFrequencia + 1)
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
 
         Random random = new Random();
+        Set<Integer> aposta = new HashSet<>(numerosIntervalo);
+
         while (aposta.size() < tamanhoAposta) {
-            int numeroAleatorio = random.nextInt(25) + 1;
-            aposta.add(numeroAleatorio);
+            aposta.add(random.nextInt(TOTAL_NUMEROS_LOTERIA) + 1);
+        }
+
+        return aposta.stream().sorted().toArray(Integer[]::new);
+    }
+
+    public static Integer[] gerarApostaAleatoriaComMaisFrequentes(int tamanhoAposta) {
+        Set<Integer> aposta = new HashSet<>();
+        Random random = new Random();
+
+        while (aposta.size() < tamanhoAposta) {
+            aposta.add(random.nextInt(TOTAL_NUMEROS_LOTERIA) + 1);
+        }
+
+        List<Integer> numerosMaisFrequentes = getNumerosMaisFrequentes(tamanhoAposta);
+        List<Integer> apostaList = new ArrayList<>(aposta);
+
+        if (apostaList.size() > 15) {
+            for (int i = 0; i < numerosMaisFrequentes.size(); i++) {
+                apostaList.set(i, numerosMaisFrequentes.get(i));
+            }
+        }
+
+        return apostaList.stream().sorted().toArray(Integer[]::new);
+    }
+
+    public static Integer[] gerarSurpresinha(int tamanhoAposta) {
+        Random random = new Random();
+        Set<Integer> aposta = new HashSet<>();
+
+        while (aposta.size() < tamanhoAposta) {
+            aposta.add(random.nextInt(TOTAL_NUMEROS_LOTERIA) + 1);
         }
 
         return aposta.stream().sorted().toArray(Integer[]::new);
     }
 
     public static void main(String[] args) {
-        Integer[] numerosLoteria = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25};
         try (Scanner scanner = new Scanner(System.in)) {
-			int tamanhoAposta;
+            int tamanhoAposta = obterTamanhoAposta(scanner);
 
-			do {
-			    System.out.print("Digite o tamanho da aposta (15 a 20): ");
-			    tamanhoAposta = scanner.nextInt();
-			} while (tamanhoAposta < 15 || tamanhoAposta > 20);
+            exibirApostasFrequencia(tamanhoAposta);
 
-			Combinador<Integer> combinador = new Combinador<>(tamanhoAposta, numerosLoteria);
+            exibirApostaIntervalo(scanner, tamanhoAposta);
 
-			System.out.print("Digite a quantidade de apostas a serem geradas: ");
-			int quantidadeApostas = scanner.nextInt();
+            exibirApostaAleatoriaComMaisFrequentes(tamanhoAposta);
 
-			List<Integer[]> apostasGeradas = new ArrayList<>();
-			for (int seed = 0; seed < quantidadeApostas; seed++) {
-			    Integer[] aposta = combinador.pegarCombinacao(seed);
-			    System.out.println("Aposta " + (seed + 1) + ": " + Arrays.toString(aposta));
-			    apostasGeradas.add(aposta);
-			}
+            gerarMultiplasApostas(scanner, tamanhoAposta);
 
-			System.out.print("Deseja salvar as apostas em um arquivo? (S/N): ");
-			String resposta = scanner.next();
-
-			if (resposta.equalsIgnoreCase("S")) {
-			    System.out.print("Digite o nome do arquivo: ");
-			    String nomeArquivo = scanner.next();
-			    salvarApostas(apostasGeradas, nomeArquivo);
-				System.out.println("Apostas salvas com sucesso em " + nomeArquivo);
-			}
-
-			System.out.print("Deseja gerar uma aposta 'Surpresinha'? (S/N): ");
-			resposta = scanner.next();
-
-			if (resposta.equalsIgnoreCase("S")) {
-			    Integer[] apostaSurpresinha = gerarSurpresinha(tamanhoAposta, numerosLoteria);
-			    System.out.println("Aposta Surpresinha: " + Arrays.toString(apostaSurpresinha));
-			}
-		}
+            exibirApostaSurpresinha(scanner, tamanhoAposta);
+        }
     }
 
-    private static void salvarApostas(List<Integer[]> apostasGeradas, String nomeArquivo) {
-		
+    private static void gerarMultiplasApostas(Scanner scanner, int tamanhoAposta) {
+	}
+	private static void exibirApostaSurpresinha(Scanner scanner, int tamanhoAposta) {
 	}
 
-	private static Integer[] gerarSurpresinha(int tamanhoAposta, Integer[] numerosLoteria) {
-        Random random = new Random();
-        Set<Integer> aposta = new HashSet<>();
-
-        while (aposta.size() < tamanhoAposta) {
-            int numeroAleatorio = random.nextInt(25) + 1;
-            aposta.add(numeroAleatorio);
-        }
-
-        return aposta.stream().sorted().toArray(Integer[]::new);
+	private static int obterTamanhoAposta(Scanner scanner) {
+        int tamanhoAposta;
+        do {
+            System.out.print("Digite o tamanho da aposta (15 a 20): ");
+            tamanhoAposta = scanner.nextInt();
+        } while (tamanhoAposta < 15 || tamanhoAposta > 20);
+        return tamanhoAposta;
     }
-}        
+
+    private static void exibirApostasFrequencia(int tamanhoAposta) {
+        System.out.println("Aposta com números mais frequentes: " + Arrays.toString(gerarApostaMaisFrequentes(tamanhoAposta)));
+        System.out.println("Aposta com números menos frequentes: " + Arrays.toString(gerarApostaMenosFrequentes(tamanhoAposta)));
+    }
+
+    private static void exibirApostaIntervalo(Scanner scanner, int tamanhoAposta) {
+        int inicioFrequencia, fimFrequencia;
+        do {
+            System.out.print("Digite o início do intervalo de frequência (1 a 25): ");
+            inicioFrequencia = scanner.nextInt();
+            System.out.print("Digite o fim do intervalo de frequência (1 a 25): ");
+            fimFrequencia = scanner.nextInt();
+        } while (inicioFrequencia < 1 || fimFrequencia > TOTAL_NUMEROS_LOTERIA || inicioFrequencia > fimFrequencia);
+
+        try {
+            System.out.println("Aposta com números do intervalo de frequência: " + Arrays.toString(gerarApostaIntervalo(inicioFrequencia, fimFrequencia, tamanhoAposta)));
+        } catch (IllegalArgumentException e) {
+            System.out.println("Erro: " + e.getMessage());
+        }
+    
+}   
+
+
+    private static void exibirApostaAleatoriaComMaisFrequentes(int tamanhoAposta) {
+        Object inicioFrequencia = null;
+		Object fimFrequencia = null;
+		System.out.println("Aposta aleatória com números mais frequentes: " + Arrays.toString(gerarApostaAletoria(
+        inicioFrequencia, fimFrequencia, tamanhoAposta)));
+    }
+
+	private static long[] gerarApostaAletoria(Object inicioFrequencia, Object fimFrequencia, int tamanhoAposta) {
+		return null;
+	}
+
+	public Integer[] pegarCombinacao(int seed) {
+		return null;
+	}
+	
+}	
+        
+        		
+        		

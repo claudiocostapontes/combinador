@@ -6,6 +6,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 
+//seis dezenas ímpares e seis dezenas pares
+
 public class CincoDezenas {
 
     public static void main(String[] args) {
