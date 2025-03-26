@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 
-//seis dezenas ímpares e seis dezenas pares
+//seis dezenas ímpares e seis dezenas pares é o que esse código faz
 
 public class CincoDezenas {
 
