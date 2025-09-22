@@ -1,4 +1,4 @@
-package br.com.loto;
+package loto;
 
 import java.util.ArrayList;
 import java.util.Arrays;

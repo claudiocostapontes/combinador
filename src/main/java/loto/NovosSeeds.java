@@ -1,4 +1,4 @@
-package br.com.loto;
+package loto;
 
 import org.apache.commons.math3.random.MersenneTwister;
 
